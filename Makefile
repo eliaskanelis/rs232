@@ -1,42 +1,62 @@
 #
+# GNU Makefile for RS232
 #
-# Author: Teunis van Beelen
-#
-# email: teuniz@gmail.com
-#
-#
+
+#..............................................................................
+# Tools
 
 CC = gcc
-CFLAGS = -Wall -Wextra -Wshadow -Wformat-nonliteral -Wformat-security -Wtype-limits -o2
+CFLAGS = -Wall -Wextra -Wshadow -Wformat-nonliteral -Wformat-security \
+		 -Wtype-limits -o2
 
-objects = rs232.o
+RM = rm -rf
+MKDIR = mkdir -p
 
-all: test_rx test_tx
+#..............................................................................
+# Phony rules
 
-test_rx : $(objects) demo_rx.o
-	$(CC) $(objects) demo_rx.o -o test_rx
+.PHONY: all
+all: bin/test_cmd bin/test_rx bin/test_tx
 
-test_tx : $(objects) demo_tx.o
-	$(CC) $(objects) demo_tx.o -o test_tx
+.PHONY: clear
+clean:
+	$(RM) bin
+	$(RM) obj
 
-demo_rx.o : demo_rx.c rs232.h
-	$(CC) $(CFLAGS) -c demo_rx.c -o demo_rx.o
+.PHONY: run
+run:
+	bin/test_cmd
 
-demo_tx.o : demo_tx.c rs232.h
-	$(CC) $(CFLAGS) -c demo_tx.c -o demo_tx.o
+#..............................................................................
+# Executables
+bin/test_cmd: obj/rs232.o obj/demo_cmd.o | bin/
+	$(CC) obj/rs232.o obj/demo_cmd.o -o bin/test_cmd
 
-rs232.o : rs232.h rs232.c
-	$(CC) $(CFLAGS) -c rs232.c -o rs232.o
+bin/test_rx: obj/rs232.o obj/demo_rx.o | bin/
+	$(CC) obj/rs232.o obj/demo_rx.o -o bin/test_rx
 
-clean :
-	$(RM) test_rx test_tx $(objects) demo_rx.o demo_tx.o rs232.o
+bin/test_tx: obj/rs232.o obj/demo_tx.o | bin/
+	$(CC) obj/rs232.o obj/demo_tx.o -o bin/test_tx
 
-#
-#
-#
-#
+#..............................................................................
+# Object files
+obj/demo_cmd.o: src/demo_cmd.c src/rs232.h | obj/
+	$(CC) $(CFLAGS) -c src/demo_cmd.c -o obj/demo_cmd.o
 
+obj/demo_rx.o: src/demo_rx.c src/rs232.h | obj/
+	$(CC) $(CFLAGS) -c src/demo_rx.c -o obj/demo_rx.o
 
+obj/demo_tx.o: src/demo_tx.c src/rs232.h | obj/
+	$(CC) $(CFLAGS) -c src/demo_tx.c -o obj/demo_tx.o
 
+obj/rs232.o: src/rs232.h src/rs232.c | obj/
+	$(CC) $(CFLAGS) -c src/rs232.c -o obj/rs232.o
 
+#..............................................................................
+# Folder creation
+bin/:
+	$(MKDIR) $@
+
+obj/:
+	$(MKDIR) $@
 
