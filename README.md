@@ -2,9 +2,10 @@
 
 ### Description
 
-> RS-232 for Linux, FreeBSD and windows
+> RS-232 for Linux, FreeBSD and windows in C
 
-Credits to original author: Teunis van Beelen
+Credits to original author: *Teunis van Beelen*
+
 Taken from http://www.teuniz.net/RS-232/
 
 Here you can find code to use the serial port.
